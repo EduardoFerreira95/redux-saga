@@ -1,8 +1,7 @@
-import { IPutSagaEffect } from './../../../types/saga.types';
 import { all, takeLatest, call, put } from 'redux-saga/effects';
 
 import {
-  onSucceededActions,
+  createAction,
 } from './actions';
 import {
   IAddProductRequestAction,
@@ -13,22 +12,17 @@ import {
 
 import Remote from '../../../services/Remote';
 import { errorHandler } from '../../../util/errorHandler';
-import {
-  ADD_PRODUCT_REQUEST_SUCCEEDED,
-  DELETE_PRODUCT_REQUEST_SUCCEEDED,
-  GET_API_PRODUCTS_REQUEST_SUCCEEDED,
-  INCREMENT_PRODUCT_REQUEST_SUCCEEDED
-} from '../../../constants/types.constants';
 
 const epRemote = Remote.instance;
 function* checkProductStock(action: IAddProductRequestAction) {
   try {
     const product: IProduct = yield call(epRemote.createProductRequest, action.product);
 
-    yield put<IPutSagaEffect>(onSucceededActions({
-      payload: product,
-      type: ADD_PRODUCT_REQUEST_SUCCEEDED,
-    }));
+    yield put(
+      createAction<{
+        product: IProduct
+      }>('ADD_PRODUCT_REQUEST_SUCCEEDED')({ product }),
+    );
   } catch(err) {
     yield errorHandler(err);
   }
@@ -42,11 +36,11 @@ function* incrementProductQuantity(action: IIncrementProductRequestAction) {
       action.incrementedProduct.quantity
     );
 
-    yield put<IPutSagaEffect>(onSucceededActions({
-      payload: product,
-      type: INCREMENT_PRODUCT_REQUEST_SUCCEEDED,
-    }));
-
+    yield put(
+      createAction<{
+        product: IProduct
+      }>('INCREMENT_PRODUCT_REQUEST_SUCCEEDED')({ product }),
+    );
   } catch(err) {
     yield errorHandler(err);
   }
@@ -56,10 +50,11 @@ function* deleteProduct({ product }: IDeleteProductRequestAction) {
   try {
     yield call(epRemote.deleteProductRequest, product);
 
-    yield put<IPutSagaEffect>(onSucceededActions({
-      payload: product,
-      type: DELETE_PRODUCT_REQUEST_SUCCEEDED,
-    }));
+    yield put(
+      createAction<{
+        product: IProduct
+      }>('DELETE_PRODUCT_REQUEST_SUCCEEDED')({ product }),
+    );
   } catch(err) {
     yield errorHandler(err);
   }
@@ -68,11 +63,10 @@ function* deleteProduct({ product }: IDeleteProductRequestAction) {
 function* getAPIProducts() {
   try {
     const products: IProduct[] = yield call(epRemote.productsRequest);
-
-    yield put<IPutSagaEffect>(onSucceededActions({
-      payload: products,
-      type: GET_API_PRODUCTS_REQUEST_SUCCEEDED,
-    }));
+    yield put(
+      createAction<{
+        products: IProduct[]
+      }>('GET_API_PRODUCTS_REQUEST_SUCCEEDED')({ products }));
   } catch(err) {
     yield errorHandler(err);
   }

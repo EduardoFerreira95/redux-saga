@@ -77,7 +77,7 @@ export type RequestFailureType = {
 export type ActionsRequestTypes = SucceededRequestActions | RequestFailureType;
 
 export type RequestActions = IDeleteProductRequestAction | IGetAPIProductsRequestAction | IAddProductRequestAction | IIncrementProductRequestAction;
-export type SucceededRequestActions = IDeleteProductRequestSucceededAction | IGetAPIProductsRequestSucceededAction | IIncrementProductRequestSucceededAction | IAddProductRequestSucceededAction;
+export type SucceededRequestActions = IAddProductRequestSucceededAction | IDeleteProductRequestSucceededAction | IGetAPIProductsRequestSucceededAction | IIncrementProductRequestSucceededAction | IAddProductRequestSucceededAction;
 
 export type DeleteProductActionsRequestsTypes = IDeleteProductRequestAction | IDeleteProductRequestSucceededAction;
 export type ActionsAPIRequestTypes = IGetAPIProductsRequestAction | IGetAPIProductsRequestSucceededAction;

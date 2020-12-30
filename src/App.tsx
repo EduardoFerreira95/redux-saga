@@ -7,10 +7,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { IErrorHandler, IProduct, IStore } from './store/modules/products/types';
 import {
-  addProductRequest,
-  updateRequestProduct,
-  deleteRequestProduct,
-  getAPIProductsRequest
+  createAction,
 } from './store/modules/products/actions'
 import { errorHandler } from './util/errorHandler';
 
@@ -23,7 +20,7 @@ function App() {
   const [quantity, setQuantity] = useState<number>(0);
 
   useEffect(() => {
-    dispatch(getAPIProductsRequest());
+      dispatch(createAction('GET_API_PRODUCTS_REQUEST')());
   }, [dispatch]);
 
   useEffect(() => {
@@ -50,7 +47,10 @@ function App() {
         name,
         quantity,
       });
-      dispatch(addProductRequest(product));
+      dispatch(
+        createAction<{
+          product: IProduct
+        }>('ADD_PRODUCT_REQUEST')({ product }));
       setName('');
       setQuantity(0);
       setError({
@@ -64,14 +64,18 @@ function App() {
   }, [name, quantity, dispatch]);
 
   const handleUpdateProduct = useCallback((updatedProduct: IProduct, quantity: number) => {
-    dispatch(updateRequestProduct({
-      product: updatedProduct,
-      quantity,
-    }));
+    dispatch(
+      createAction<{
+        updatedProduct: IProduct,
+        quantity: number
+      }>('INCREMENT_PRODUCT_REQUEST')({ updatedProduct, quantity })
+    );
   }, [dispatch]);
 
   const handleDeleteProduct = useCallback((deletedProduct: IProduct) => {
-    dispatch(deleteRequestProduct(deletedProduct));
+    dispatch(createAction<{
+      deletedProduct: IProduct
+    }>('DELETE_PRODUCT_REQUEST')({ deletedProduct }));
   }, [dispatch]);
 
   const handleErrorMessage = useCallback(() => {
