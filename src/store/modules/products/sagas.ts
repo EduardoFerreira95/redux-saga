@@ -3,20 +3,21 @@ import { all, takeLatest, call, put } from 'redux-saga/effects';
 import {
   createAction,
 } from './actions';
-import {
-  IAddProductRequestAction,
-  IProduct,
-  IIncrementProductRequestAction,
-  IDeleteProductRequestAction
-} from './types';
+
+import { 
+  IProduct, 
+  IDeleteProductRequest,
+  IIncrementedProductRequest, 
+  IAddProductRequest,
+} from './types'
 
 import Remote from '../../../services/Remote';
 import { errorHandler } from '../../../util/errorHandler';
 
 const epRemote = Remote.instance;
-function* checkProductStock(action: IAddProductRequestAction) {
-  try {
-    const product: IProduct = yield call(epRemote.createProductRequest, action.product);
+function* addProductStock({ payload: { product: data } }: IAddProductRequest) {
+  try {    
+    const product: IProduct = yield call(epRemote.createProductRequest, data);
 
     yield put(
       createAction<{
@@ -28,32 +29,32 @@ function* checkProductStock(action: IAddProductRequestAction) {
   }
 }
 
-function* incrementProductQuantity(action: IIncrementProductRequestAction) {
+function* incrementProductQuantity({ payload: { product, quantity } }: IIncrementedProductRequest) {
   try {
-    const product: IProduct = yield call(
+    const updatedProduct: IProduct = yield call(
       epRemote.incrementProductQuantityRequest,
-      action.incrementedProduct.product,
-      action.incrementedProduct.quantity
+      product,
+      quantity,
     );
 
     yield put(
       createAction<{
-        product: IProduct
-      }>('INCREMENT_PRODUCT_REQUEST_SUCCEEDED')({ product }),
+        updatedProduct: IProduct
+      }>('INCREMENT_PRODUCT_REQUEST_SUCCEEDED')({ updatedProduct }),
     );
   } catch(err) {
     yield errorHandler(err);
   }
 }
 
-function* deleteProduct({ product }: IDeleteProductRequestAction) {
-  try {
+function* deleteProduct({ payload: { product } }: IDeleteProductRequest) {
+  try {    
     yield call(epRemote.deleteProductRequest, product);
 
     yield put(
       createAction<{
         product: IProduct
-      }>('DELETE_PRODUCT_REQUEST_SUCCEEDED')({ product }),
+      }>('DELETE_PRODUCT_REQUEST_SUCCEEDED')({ product }),      
     );
   } catch(err) {
     yield errorHandler(err);
@@ -73,7 +74,7 @@ function* getAPIProducts() {
 }
 
 export default all([
-  takeLatest('ADD_PRODUCT_REQUEST', checkProductStock),
+  takeLatest('ADD_PRODUCT_REQUEST', addProductStock),
   takeLatest('INCREMENT_PRODUCT_REQUEST', incrementProductQuantity),
   takeLatest('DELETE_PRODUCT_REQUEST', deleteProduct),
   takeLatest('GET_API_PRODUCTS_REQUEST', getAPIProducts),
