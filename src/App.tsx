@@ -38,10 +38,13 @@ function App() {
     setQuantity(Number(event.target.value))
   }, []);
 
-  const handleAddProduct = useCallback((event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+  const handleAddProduct = useCallback(function* (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
+    
     try {
       event.preventDefault();
-      if(name === '' || quantity === 0) throw new Error('Preencha os campos em branco!');
+      if(!name || quantity === 0) {
+        throw new Error();
+      }
 
       const product: IProduct  = Object.assign({
         name,
@@ -59,23 +62,23 @@ function App() {
       });
       return;
     } catch (err) {
-      errorHandler(err);
+      return yield errorHandler(err);
     }
   }, [name, quantity, dispatch]);
 
-  const handleUpdateProduct = useCallback((updatedProduct: IProduct, quantity: number) => {
+  const handleUpdateProduct = useCallback((product: IProduct, quantity: number) => {
     dispatch(
       createAction<{
-        updatedProduct: IProduct,
+        product: IProduct,
         quantity: number
-      }>('INCREMENT_PRODUCT_REQUEST')({ updatedProduct, quantity })
+      }>('INCREMENT_PRODUCT_REQUEST')({ product, quantity })
     );
   }, [dispatch]);
 
-  const handleDeleteProduct = useCallback((deletedProduct: IProduct) => {
+  const handleDeleteProduct = useCallback((product: IProduct) => {
     dispatch(createAction<{
-      deletedProduct: IProduct
-    }>('DELETE_PRODUCT_REQUEST')({ deletedProduct }));
+      product: IProduct
+    }>('DELETE_PRODUCT_REQUEST')({ product }));
   }, [dispatch]);
 
   const handleErrorMessage = useCallback(() => {
