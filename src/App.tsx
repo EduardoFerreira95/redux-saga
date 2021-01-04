@@ -38,13 +38,10 @@ function App() {
     setQuantity(Number(event.target.value))
   }, []);
 
-  const handleAddProduct = useCallback(function* (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
-    
+  const handleAddProduct = useCallback((event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     try {
       event.preventDefault();
-      if(!name || quantity === 0) {
-        throw new Error();
-      }
+      if(!name || quantity === 0) throw new Error();
 
       const product: IProduct  = Object.assign({
         name,
@@ -62,7 +59,7 @@ function App() {
       });
       return;
     } catch (err) {
-      return yield errorHandler(err);
+      errorHandler(err);
     }
   }, [name, quantity, dispatch]);
 
