@@ -1,7 +1,9 @@
-import { 
+import {
   DELETE_PRODUCT_REQUEST_SUCCEEDED,
   INCREMENT_PRODUCT_REQUEST_SUCCEEDED,
   ADD_PRODUCT_REQUEST_SUCCEEDED,
+  GET_API_PRODUCTS_REQUEST_SUCCEEDED,
+  REQUEST_FAILURE,
 } from "../../../constants/types.constants";
 
 export interface IProduct {
@@ -25,7 +27,11 @@ export interface IStore {
   errorHandler: IErrorHandler;
 };
 export interface ActionsRequest {
-  type: string;
+  type: typeof DELETE_PRODUCT_REQUEST_SUCCEEDED |
+  typeof INCREMENT_PRODUCT_REQUEST_SUCCEEDED |
+  typeof ADD_PRODUCT_REQUEST_SUCCEEDED |
+  typeof REQUEST_FAILURE |
+  typeof GET_API_PRODUCTS_REQUEST_SUCCEEDED;
   payload: any;
 }
 

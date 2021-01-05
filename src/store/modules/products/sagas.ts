@@ -1,22 +1,21 @@
-import { all, takeLatest, call, put } from 'redux-saga/effects';
+import { all, takeLatest, call, put, takeLeading } from 'redux-saga/effects';
 
 import {
   createAction,
 } from './actions';
 
-import { 
-  IProduct, 
+import {
+  IProduct,
   IDeleteProductRequest,
-  IIncrementedProductRequest, 
+  IIncrementedProductRequest,
   IAddProductRequest,
 } from './types'
 
-import Remote from '../../../services/Remote';
+import epRemote from '../../../services/products';
 import { errorHandler } from '../../../util/errorHandler';
 
-const epRemote = Remote.instance;
 function* addProductStock({ payload: { product: data } }: IAddProductRequest) {
-  try {    
+  try {
     const product: IProduct = yield call(epRemote.createProductRequest, data);
 
     yield put(
@@ -48,13 +47,13 @@ function* incrementProductQuantity({ payload: { product, quantity } }: IIncremen
 }
 
 function* deleteProduct({ payload: { product } }: IDeleteProductRequest) {
-  try {    
+  try {
     yield call(epRemote.deleteProductRequest, product);
 
     yield put(
       createAction<{
         product: IProduct
-      }>('DELETE_PRODUCT_REQUEST_SUCCEEDED')({ product }),      
+      }>('DELETE_PRODUCT_REQUEST_SUCCEEDED')({ product }),
     );
   } catch(err) {
     yield errorHandler(err);
@@ -76,6 +75,6 @@ function* getAPIProducts() {
 export default all([
   takeLatest('ADD_PRODUCT_REQUEST', addProductStock),
   takeLatest('INCREMENT_PRODUCT_REQUEST', incrementProductQuantity),
-  takeLatest('DELETE_PRODUCT_REQUEST', deleteProduct),
+  takeLeading('DELETE_PRODUCT_REQUEST', deleteProduct),
   takeLatest('GET_API_PRODUCTS_REQUEST', getAPIProducts),
 ]);

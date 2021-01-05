@@ -1,3 +1,4 @@
+
 import { IErrorHandler, IStore, ActionsRequest } from './types';
 
 const initialState: IStore = {
@@ -5,23 +6,23 @@ const initialState: IStore = {
   errorHandler: {} as IErrorHandler,
 };
 
-const productReducer = (state = initialState, action: ActionsRequest ): IStore => {
+const productReducer = (state = initialState, action: ActionsRequest): IStore => {
   switch(action.type) {
     case 'ADD_PRODUCT_REQUEST_SUCCEEDED':
     return {
       ...state,
       products: [...state.products, action.payload.product],
-    };
+    }
     case 'INCREMENT_PRODUCT_REQUEST_SUCCEEDED':
-      return {
+    return {
       ...state,
       products: state.products.map(product =>
         product.id === action.payload.updatedProduct.id ? {
           ...action.payload.updatedProduct,
-          quantity: action.payload.updatedProduct.quantity
+          quantity: action.payload.updatedProduct.quantity,
         } : product,
       ),
-    }
+    };
     case 'DELETE_PRODUCT_REQUEST_SUCCEEDED':
     return {
       ...state,
@@ -33,7 +34,7 @@ const productReducer = (state = initialState, action: ActionsRequest ): IStore =
       products: action.payload.products,
     }
     case 'REQUEST_FAILURE':
-      return {
+    return {
       ...state,
       errorHandler: {
         content: action.payload.content,
