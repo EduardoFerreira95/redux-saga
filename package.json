@@ -44,9 +44,6 @@
       "last 1 safari version"
     ]
   },
-  "jest": {
-    "preset": "react-native"
-  },
   "devDependencies": {
     "@babel/core": "^7.12.10",
     "@babel/preset-env": "^7.12.11",
