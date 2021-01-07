@@ -63,12 +63,11 @@ function App() {
     }
   }, [name, quantity, dispatch]);
 
-  const handleUpdateProduct = useCallback((product: IProduct, quantity: number) => {
+  const handleUpdateProduct = useCallback((product: IProduct) => {
     dispatch(
       createAction<{
         product: IProduct,
-        quantity: number
-      }>('INCREMENT_PRODUCT_REQUEST')({ product, quantity })
+      }>('INCREMENT_PRODUCT_REQUEST')({ product })
     );
   }, [dispatch]);
 
@@ -111,7 +110,7 @@ function App() {
             <div style={{ display: 'flex' }} key={product.id}>
               <p>{product.name}</p>
               <p style={{ paddingRight: 10, paddingLeft: 10 }}>{product.quantity}</p>
-              <button type='button' onClick={() => handleUpdateProduct(product, 1)}>Incrementar mais um</button>
+              <button type='button' onClick={() => handleUpdateProduct(product)}>Incrementar mais um</button>
               <button type='button' onClick={() => handleDeleteProduct(product)}>Deletar</button>
             </div>
           )) : (
